@@ -30,14 +30,14 @@ print(result)
 
 # Task_5
 
-# lenth = int(input('Введите длинну '))
-# width = int(input('Введите ширину '))
-#
-# P = 2 * (lenth + width)
-# S = lenth * width
-#
-# print('Периметр равен ', P)
-# print('Площадь равна ', S)
+lenth = int(input('Введите длинну '))
+width = int(input('Введите ширину '))
+
+P = 2 * (lenth + width)
+S = lenth * width
+
+print('Периметр равен ', P)
+print('Площадь равна ', S)
 
 # Task_6
 
