@@ -23,3 +23,5 @@
         <td>https://github.com/fomka31/cs-programming-2025-labs/blob/main/labs/lab2/timetable_3w.md</td>
     </tr>
 </table>
+
+![Изображение](https://github.com/fomka31/cs-programming-2025-labs/blob/new-picture/labs/lab2/7cde8s-960.jpg?raw=true)
