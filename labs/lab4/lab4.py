@@ -40,3 +40,10 @@
 #         print(human_age)
 # except:
 #     print('введено не число')
+
+# Task_4
+
+num = input()
+
+def is_divbysix(num):
+    
