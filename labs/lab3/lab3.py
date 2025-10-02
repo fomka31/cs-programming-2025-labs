@@ -36,7 +36,7 @@ while i >= 0:
 
 num = int(input('Введите число: '))
 a, b = 0, 1
-while num >= b:
+while num >= a:
     print(a)
     a, b = b, a+b
 
