@@ -46,4 +46,4 @@
 num = input()
 
 def is_divbysix(num):
-    
+    pass
