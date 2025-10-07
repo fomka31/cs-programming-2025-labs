@@ -1,7 +1,7 @@
 # Task_1
 
-name = input('Введите возраст: ')
-age = input('Введите имя: ')
+age = input('Введите возраст: ')
+name = input('Введите имя: ')
 for i in range(10):
     print(f"Меня зовут {name} и мне {age} лет.")
 
