@@ -14,7 +14,7 @@ for i in range(1, 11):
 
 # Task_3
 
-gen = [i for i in range(100) if i % 3 == 2]
+gen = [i for i in range(101) if i % 3 == 2]
 print(gen)
 
 # Task_4
@@ -38,7 +38,7 @@ num = int(input('Введите число: '))
 a, b = 0, 1
 while num >= a:
     print(a)
-    a, b = b, a+b
+    a, b = b, a + b
 
 # Task_7
 
@@ -59,4 +59,3 @@ while flag:
         print(f'Сумма равна: {int(a)+int(b)}')
     except:
         print('Вводи нормально')
-        flag = False
