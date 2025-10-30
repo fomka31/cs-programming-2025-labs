@@ -104,3 +104,51 @@
 
 #Task 8
 
+# try:
+#     num = int(input('Введите сумму покупки: '))
+#     if num < 1000:
+#         discount = 0
+#     elif 1000<=num<5000:
+#         discount = 5
+#     elif 5000<=num<10000:
+#         discount = 10
+#     elif num <= 10000:
+#         discount = 15
+#     print(f'Ваша скидка: {discount}%')
+#     print(f'К оплате: {num*((100-discount)/100)}')
+# except:
+#     print('Неверный ввод')
+
+#Task 9
+
+# try:
+#     time = int(input('Введите час (0–23): '))
+#     if time in [int(i) for i in range(6)]:
+#         print('Сейчас ночь')
+#     elif time in [int(i) for i in range(6,12)]:
+#         print('Сейчас утро')
+#     elif time in [int(i) for i in range(12,18)]:
+#         print('Сейчас день')
+#     elif time in [int(i) for i in range(18,24)]:
+#         print('Сейчас вечер')
+#     else:
+#         int('s')
+# except:
+#     print('Неверный ввод')
+
+#Task 10
+
+def is_prime(number):
+    if number in [0,2]:
+        return False
+    for i in range(2, number):
+        if number%i == 0:
+            return False
+    return True
+
+try:
+    num = int(input('Введите число: ')) 
+    res = is_prime(num)
+    print(f'{num} - {'простое число' if res else 'составное число'}')
+except ValueError:   
+    print('Неверный ввод')
