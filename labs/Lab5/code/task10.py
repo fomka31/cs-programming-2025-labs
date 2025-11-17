@@ -1,7 +1,7 @@
 #Task 10
 
 def is_prime(number):
-    if number in [0,1]:
+    if number in [0,1, 2]:
         return False
     for i in range(2, number):
         if number%i == 0:

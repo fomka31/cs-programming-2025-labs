@@ -1,3 +1,7 @@
-num = int(input())
-summ_div_3 = True if sum(int(x) for x in list(str(num))) % 3 == 0 else False
-print(summ_div_3)
+def help(x):
+    min1=min(x, key=x.get)
+    max1=max(x, key=x.get)
+    return min1, max1
+
+products={"apple":100,"banana":80,"orange":120,"grape":90}
+print(help(products))
