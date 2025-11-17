@@ -3,6 +3,8 @@
 try:
     num = int(input('Введите сумму покупки: '))
     discount = 0
+    if num <=0:
+        raise
     if num < 1000:
         discount = 0
     elif 1000<=num<5000:

@@ -1,7 +1,8 @@
 #Task 9
-
 try:
+
     time = int(input('Введите час (0–23): '))
+    if time not in [int(i) for i in range(24)]: raise
     if time in [int(i) for i in range(6)]:
         print('Сейчас ночь')
     elif time in [int(i) for i in range(6,12)]:
@@ -10,7 +11,6 @@ try:
         print('Сейчас день')
     elif time in [int(i) for i in range(18,24)]:
         print('Сейчас вечер')
-    else:
-        int('s')
+
 except:
-    print('Неверный ввод')
+    print('неверный ввод')
