@@ -1,17 +1,42 @@
-#Task 8
+#Task_8
+import random
+
+rules = {
+    'ножницы' : ['бумага','ящерица'],
+    'бумага' : ['спок','камень'],
+    'камень' : ['ножницы', 'ящерица'],
+    'ящерица' : ['спок','бумага'],
+    'спок' : ['камень','ножницы']
+}
+
+
+choices = [x for x in rules.keys()]
+
+def print_choices():
+    global ai_choice
+    global player_choice
+    print(f"Выбор ии : {ai_choice}")
+    print(f'Выбор игрока : {player_choice}')
+
+ai_choice = random.choice(choices)
+
+print('Список знаков')
+for i in choices:
+    print(i.capitalize())
+player_choice = input('Выберите знак : ')
 
 try:
-    num = int(input('Введите сумму покупки: '))
-    discount = 0
-    if num < 1000:
-        discount = 0
-    elif 1000<=num<5000:
-        discount = 5
-    elif 5000<=num<10000:
-        discount = 10
-    elif num <= 10000:
-        discount = 15
-    print(f'Ваша скидка: {discount}%')
-    print(f'К оплате: {num*((100-discount)/100)}')
+    if player_choice not in choices: raise
+
+    if player_choice in rules[ai_choice]:
+        print_choices()
+        print("Ты проиграл")
+
+    elif ai_choice in rules[player_choice]:
+        print_choices()
+        print('Ты победил')
+    else:
+       print_choices()
+       print('Ничья')
 except:
-    print('Неверный ввод')
+    print('Неверный знак')

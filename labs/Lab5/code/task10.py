@@ -1,16 +1,11 @@
-#Task 10
+#Task_10
 
-def is_prime(number):
-    if number in [0,1, 2]:
-        return False
-    for i in range(2, number):
-        if number%i == 0:
-            return False
-    return True
+stud_list = [("Анна", [5, 4, 5]), ("Иван", [3, 4, 4]), ("Мария", [5, 5, 5])]
 
-try:
-    num = int(input('Введите число: ')) 
-    res = is_prime(num)
-    print(f'{num} - {'простое число' if res else 'составное число'}')
-except ValueError:   
-    print('Неверный ввод')
+stud_dict = dict()
+
+for x,y in stud_list:
+    stud_dict[x] = (sum(i for i in y) / len(y)).__round__(3)
+
+prime_char = sorted(stud_dict, key=lambda x : x[1])[0]
+print(f'Лучший ученик : {prime_char}, его(её) средний балл : {stud_dict[prime_char]}')

@@ -1,7 +1,15 @@
-# Task 7
+#Task_7
 
-a = [int(i) for i in input('Введите 3 числа :' ).split()]
-minimal = a[0]
-for i in a[1:]:
-    minimal = int(i) if int(i) < minimal else minimal
-print(minimal)
+trans_dict = {
+    'apple':'Яблоко',
+    'peach':'Груша',
+    'ball':'Мяч',
+    'snow':'Снег',
+    'wood':'Дерево'
+}
+
+word = input('Введите слово: ')
+try:
+    print(f'Перевод слова {word} : {trans_dict[word.lower()]}')
+except:
+    print(f'Слово {word} отсутсвует в словаре')

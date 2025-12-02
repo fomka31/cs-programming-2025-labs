@@ -1,16 +1,13 @@
-#Task 9
+#Task_9
 
-try:
-    time = int(input('Введите час (0–23): '))
-    if time in [int(i) for i in range(6)]:
-        print('Сейчас ночь')
-    elif time in [int(i) for i in range(6,12)]:
-        print('Сейчас утро')
-    elif time in [int(i) for i in range(12,18)]:
-        print('Сейчас день')
-    elif time in [int(i) for i in range(18,24)]:
-        print('Сейчас вечер')
-    else:
-        int('s')
-except:
-    print('Неверный ввод')
+lst = ["яблоко", "груша", "банан", "киви", "апельсин", "ананас",'киви']
+
+letter_dict = dict()
+
+for x in lst:
+    letter = x[0]
+    if letter not in letter_dict.keys():
+        letter_dict[letter] = []
+    letter_dict[letter].append(x)
+
+print(letter_dict)
