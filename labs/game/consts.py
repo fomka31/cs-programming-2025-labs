@@ -1,0 +1,10 @@
+default_lvl = 1
+default_hp = 200
+default_magic_res = 0.25
+default_phisic_res = 0
+default_mana = 100
+default_magic_dmg = 0
+default_phisic_dmg = 20
+default_piercing_dmg = 20
+default_crit_chance = 2
+default_crit_dmg = 1
