@@ -4,4 +4,3 @@ zones = [
     {"zone": "Research Wing", "active_from": 9, "active_to": 17}
 ]
 zones = [*filter(lambda x: x['active_from'] <= 8 and x['active_to'] >= 18, zones)]
-print(*zones, sep='\n')

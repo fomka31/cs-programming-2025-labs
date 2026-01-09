@@ -6,4 +6,3 @@ objects = [
 ]
 
 objects = [sorted(objects, key=lambda x : x[1], reverse=False)]
-

@@ -14,5 +14,3 @@ clearances = {
 lst = [*map(lambda x: clearances.get(x['clearance']), personnel)]
 for i in range(len(lst)):
     personnel[i]['clearance'] = lst[i]
-
-print(*personnel, sep='\n')

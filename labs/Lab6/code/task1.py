@@ -1,5 +1,3 @@
-#task_1
-
 def time_convert(data: str):
     table = {
         "s" : 1,
