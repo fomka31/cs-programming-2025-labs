@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "name": "Fff",
+    "class": "Melee",
+    "lvl": 1,
+    "exp": 0,
+    "exp_to_lvlup": 114.99999999999999,
+    "current_hp": 171,
+    "max_hp": 171,
+    "current_mana": 29,
+    "max_mana": 29,
+    "str": 17,
+    "dex": 16,
+    "int": 9,
+    "gold": 0,
+    "weapon_name": "Ржавый меч",
+    "armor_name": "Тканевая одежда",
+    "inventory_names": [
+      "Малое зелье лечения",
+      "Малое зелье маны"
+    ]
+  },
+  "dungeon": {
+    "floor": 1,
+    "room_count": 0,
+    "rooms_until_next_floor": 5
+  }
+}
