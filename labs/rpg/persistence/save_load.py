@@ -11,8 +11,12 @@ from items.item_list import (
     gold_20, gold_50, gold_100
 )
 
-SAVE_DIR = "saves"
-os.makedirs(SAVE_DIR, exist_ok=True)  # создаём папку при импорте
+_CURRENT_DIR = os.path.dirname(__file__)
+_PROJECT_ROOT = os.path.dirname(_CURRENT_DIR)
+SAVE_DIR = os.path.join(_PROJECT_ROOT, "saves")
+
+os.makedirs(SAVE_DIR, exist_ok=True)
+
 SAVE_SLOTS = [
     os.path.join(SAVE_DIR, "save_1.json"),
     os.path.join(SAVE_DIR, "save_2.json"),
