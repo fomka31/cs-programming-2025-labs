@@ -1,8 +1,8 @@
 # game.py
 
-from dungeon import Dungeon
-from utils import big_line
-from save_load import save_game
+from game.dungeon import Dungeon
+from utils.utils import big_line
+from persistence.save_load import save_game
 
 def pause_menu(hero, dungeon, current_slot):
     """Меню паузы с выбором слота для сохранения."""
@@ -18,7 +18,7 @@ def pause_menu(hero, dungeon, current_slot):
         if choice == "1":
             return "continue", current_slot
         elif choice == "2":
-            from save_load import get_save_info
+            from persistence.save_load import get_save_info
             info = get_save_info()
             print("\nСлоты для сохранения:")
             for i, status in enumerate(info, 1):

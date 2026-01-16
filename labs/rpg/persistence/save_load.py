@@ -3,6 +3,7 @@
 import json
 import os
 from characters.char_classes import Melee, Ranger, Mage
+from game.dungeon import Dungeon
 from items.item_list import (
     starter_sword, starter_bow, starter_staff, starter_armor,
     iron_sword, hunting_bow, mage_staff, leather_armor, chain_mail,
@@ -10,8 +11,13 @@ from items.item_list import (
     gold_20, gold_50, gold_100
 )
 
-# Список слотов
-SAVE_SLOTS = ["save_1.json", "save_2.json", "save_3.json"]
+SAVE_DIR = "saves"
+os.makedirs(SAVE_DIR, exist_ok=True)  # создаём папку при импорте
+SAVE_SLOTS = [
+    os.path.join(SAVE_DIR, "save_1.json"),
+    os.path.join(SAVE_DIR, "save_2.json"),
+    os.path.join(SAVE_DIR, "save_3.json")
+]
 
 ITEM_MAP = {
     "Ржавый меч": starter_sword,
@@ -143,7 +149,7 @@ def load_game(slot_index):
         hero.inventory = [ITEM_MAP[name] for name in inventory_names if name in ITEM_MAP]
 
         # Восстановление подземелья
-        from dungeon import Dungeon
+        from labs.rpg.game.dungeon import Dungeon
         dungeon = Dungeon()
         dungeon.floor = dungeon_data["floor"]
         dungeon.room_count = dungeon_data["room_count"]

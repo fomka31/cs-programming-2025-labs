@@ -1,6 +1,6 @@
 # characters/hero_create.py
 
-from .char_classes import Melee, Ranger, Mage
+from characters.char_classes import Melee, Ranger, Mage
 
 AVAILABLE_CLASSES = {
     'воин': Melee,

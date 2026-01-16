@@ -1,8 +1,8 @@
 # main.py
 
 from characters.hero_create import create_hero
-from game import play_dungeon
-from save_load import get_save_info, load_game
+from game.game_flow import play_dungeon
+from persistence.save_load import get_save_info, load_game
 from items.item_list import small_heal, small_mana
 
 def show_slots():
@@ -64,7 +64,7 @@ def main():
 
     if len(result) == 2:  # Новая игра
         hero, slot = result
-        from dungeon import Dungeon
+        from game.dungeon import Dungeon
         dungeon = Dungeon()
         play_dungeon(hero, dungeon, slot)
     else:  # Загрузка

@@ -1,8 +1,8 @@
 # characters/char_classes.py
 
 import random
-from consts import *
-from utils import big_line
+from config.consts import *
+from utils.utils import big_line
 from items.item_list import starter_sword, starter_bow, starter_staff, starter_armor
 
 

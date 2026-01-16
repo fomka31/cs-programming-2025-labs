@@ -1,19 +1,9 @@
 # logic/battle.py
 
 import random
-from characters.char_classes import Entity
+from characters.enemy import Enemy
 from items.item_classes import Gold
-from utils import big_line
-
-class Enemy(Entity):
-    def __init__(self, name, lvl, hp, physical_dmg=10):
-        super().__init__()
-        self.name = name
-        self.lvl = lvl
-        self.max_hp = hp
-        self.current_hp = hp
-        self.base_physical_dmg = physical_dmg
-        self.evade_chance = 0.05
+from labs.rpg.utils.utils import big_line
 
 def create_enemy(floor):
     base_hp = 40 + floor * 10
