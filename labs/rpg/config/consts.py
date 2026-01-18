@@ -1,4 +1,4 @@
-# consts.py
+# config\consts.py
 
 default_lvl = 1
 default_hp = 200

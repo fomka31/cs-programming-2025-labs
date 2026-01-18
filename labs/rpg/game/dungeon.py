@@ -1,4 +1,4 @@
-# dungeon.py
+# game\dungeon.py
 
 import random
 from items.item_list import CHEST_LOOT, small_heal, big_heal

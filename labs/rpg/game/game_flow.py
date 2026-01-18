@@ -1,4 +1,4 @@
-# game.py
+# game\game_flow.py
 
 from game.dungeon import Dungeon
 from utils.utils import big_line
