@@ -41,15 +41,14 @@ class Entity:
     @property
     def piercing_dmg(self):
         return self.base_piercing_dmg + getattr(self.weapon, 'piercing_dmg', 0)
-
     @property
     def magic_dmg(self):
-        return self.base_magic_dmg + getattr(self.weapon, 'magic_dmg', 0)
 
+        return self.base_magic_dmg + getattr(self.weapon, 'magic_dmg', 0)
     @property
     def is_dead(self):
-        return self.current_hp <= 0
 
+        return self.current_hp <= 0
     def get_dmg(self, dmg):
         self.current_hp = max(0, self.current_hp - dmg)
 
@@ -64,38 +63,43 @@ class Entity:
 
     def physical_attack(self, target):
         if random.random() < target.evade_chance:
+
             print(f"{target.name} уклонился!")
             return 0
-        actual_dmg = max(0, self.physical_dmg - target.physical_res)
+        raw_dmg = self.physical_dmg
+        defense = target.physical_res
+        actual_dmg = max(1, int(raw_dmg - defense))  # Минимум 1 урона
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ УДАР!")
         target.get_dmg(actual_dmg)
         return actual_dmg
-
     def magic_hit(self, target):
-        effective_res = max(0, target.magic_res - (getattr(self, 'int', 0) * 0.1))
-        actual_dmg = max(0, self.magic_dmg - effective_res)
+        raw_dmg = self.magic_dmg
+
+        # Магия частично игнорирует маг. защиту
+        effective_res = min(target.magic_res, raw_dmg * 0.7)  # Не более 70% от урона
+        actual_dmg = max(1, int(raw_dmg - effective_res))
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ МАГ. УДАР!")
         target.get_dmg(actual_dmg)
         return actual_dmg
-
     def piercing_hit(self, target):
         if random.random() < target.evade_chance:
+
             print(f"{target.name} уклонился!")
             return 0
-        actual_dmg = self.piercing_dmg
+        actual_dmg = max(1, int(self.piercing_dmg))  # Piercing всегда наносит урон
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ ВЫСТРЕЛ!")
         target.get_dmg(actual_dmg)
         return actual_dmg
 
-
 class Hero(Entity):
     def __init__(self, name):
+
         super().__init__()
         self.name = name.capitalize()
         self.str = random.randint(10, 15)
@@ -106,14 +110,14 @@ class Hero(Entity):
         self.exp = 0
         self.exp_to_lvlup = ((1.15) ** self.lvl) * 100
         self.gold = 0
-
     def plus_exp(self, num):
         self.exp += num
+
         print(f"+{num} опыта")
         self.lvl_up()
-
     def lvl_up(self):
         while self.exp >= self.exp_to_lvlup:
+
             self.exp -= self.exp_to_lvlup
             self.lvl += 1
             print("\n" + "="*30 + " НОВЫЙ УРОВЕНЬ! " + "="*30)
@@ -123,12 +127,12 @@ class Hero(Entity):
             self.exp_to_lvlup = ((1.15) ** self.lvl) * 100
             self.show_stats()
             print("="*70)
-
     def apply_stats_grow(self):
         raise NotImplementedError
 
     def show_stats(self):
         big_line()
+
         print(f"Имя: {self.name} | Класс: {self.__class__.__name__}")
         big_line()
         print(f"Сила: {self.str} | Ловкость: {self.dex} | Интеллект: {self.int}")
@@ -139,13 +143,13 @@ class Hero(Entity):
         print(f"Оружие: {self.weapon.name if self.weapon else 'Нет'}")
         print(f"Броня: {self.armor.name if self.armor else 'Нет'}")
         print()
-
     def cheat(self):
         self.exp = self.exp_to_lvlup
-        self.lvl_up()
 
+        self.lvl_up()
     def add_to_inventory(self, item):
         if len(self.inventory) >= self.inventory_size:
+
             print("Инвентарь полон!")
             self.drop_item()
         self.inventory.append(item)
@@ -154,9 +158,9 @@ class Hero(Entity):
             print(f"Получено {item.amount} золота! Всего: {self.gold}")
         else:
             print(f'Предмет "{item.name}" добавлен.')
-
     def drop_item(self):
         self.show_inventory()
+
         try:
             idx = int(input("Номер предмета для выбрасывания (0 — отмена): ")) - 1
             if idx == -1:
@@ -168,25 +172,25 @@ class Hero(Entity):
                 print("Неверный номер.")
         except ValueError:
             print("Введите число.")
-
     def show_inventory(self):
         if not self.inventory:
+
             print("Инвентарь пуст.")
             return
         print("\n=== ИНВЕНТАРЬ ===")
         for i, item in enumerate(self.inventory, 1):
             print(f"{i}. {item.name} ({item.item_type})")
-
     def open_inventory(self):
         """Полноценное меню инвентаря с действиями."""
+
         while True:
             self.show_inventory()
             if not self.inventory:
                 input("Нажмите Enter, чтобы продолжить...")
                 return
-
             print(f"\n{len(self.inventory) + 1}. Назад")
             big_line()
+
             try:
                 choice = int(input("Выберите предмет: ")) - 1
                 if choice == len(self.inventory):
@@ -198,9 +202,9 @@ class Hero(Entity):
                     print("Неверный номер.")
             except ValueError:
                 print("Введите число.")
-
     def _item_action_menu(self, item, index):
         """Меню действий для выбранного предмета."""
+
         actions = []
         if item.item_type == "potion":
             actions.append("использовать")
@@ -216,15 +220,15 @@ class Hero(Entity):
             actions.append("выбросить")
         else:
             actions.append("выбросить")
-
         actions.append("назад")
 
         print(f'\nПредмет: "{item.name}"')
         for i, action in enumerate(actions, 1):
-            print(f"{i}. {action.capitalize()}")
 
+            print(f"{i}. {action.capitalize()}")
         try:
             act_choice = int(input("Выберите действие: ")) - 1
+
             if 0 <= act_choice < len(actions):
                 action = actions[act_choice]
                 if action == "использовать":
@@ -243,9 +247,9 @@ class Hero(Entity):
                 print("Неверный выбор.")
         except ValueError:
             print("Введите число.")
-
     def equip_weapon(self, weapon):
         if not weapon.can_equip(self):
+
             print("Вы не можете экипировать это оружие!")
             return
         if self.weapon:
@@ -255,9 +259,9 @@ class Hero(Entity):
         if weapon in self.inventory:
             self.inventory.remove(weapon)
         print(f"Экипировано: {weapon.name}")
-
     def equip_armor(self, armor):
         if not armor.can_equip(self):
+
             print("Вы не можете экипировать эту броню!")
             return
         if self.armor:
@@ -268,9 +272,9 @@ class Hero(Entity):
             self.inventory.remove(armor)
         print(f"Экипирована: {armor.name}")
 
-
 class Melee(Hero):
     def __init__(self, name):
+
         super().__init__(name)
         self.str += 4
         self.dex += 1
@@ -289,9 +293,9 @@ class Melee(Hero):
         self.block_chance = 0.02 + 0.01 * self.lvl
         self.weapon = starter_sword
         self.armor = starter_armor
-
     def apply_stats_grow(self):
         self.str += 5
+
         self.dex += 2
         self.int += 1
         self.max_hp = 120 + self.str * 3
@@ -302,9 +306,9 @@ class Melee(Hero):
         self.base_physical_res = 5 + self.str * 0.3
         self.block_chance = 0.02 + 0.01 * self.lvl
 
-
 class Ranger(Hero):
     def __init__(self, name):
+
         super().__init__(name)
         self.dex += 5
         self.int += 1
@@ -323,9 +327,9 @@ class Ranger(Hero):
         self.crit_dmg = 1.7
         self.weapon = starter_bow
         self.armor = starter_armor
-
     def apply_stats_grow(self):
         self.str += 1
+
         self.dex += 5
         self.int += 2
         self.max_hp = 90 + self.str * 2
@@ -338,9 +342,9 @@ class Ranger(Hero):
         self.base_magic_res = 2 + self.int * 0.4
         self.evade_chance = 0.1 + 0.01 * self.lvl
 
-
 class Mage(Hero):
     def __init__(self, name):
+
         super().__init__(name)
         self.int += 5
         self.dex += 1
@@ -361,9 +365,9 @@ class Mage(Hero):
         self.crit_dmg = 2.2
         self.weapon = starter_staff
         self.armor = starter_armor
-
     def apply_stats_grow(self):
         self.str += 1
+
         self.dex += 2
         self.int += 6
         self.max_hp = 70 + self.str * 2

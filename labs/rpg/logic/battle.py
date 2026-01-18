@@ -3,7 +3,7 @@
 import random
 from characters.enemy import Enemy
 from items.item_classes import Gold
-from labs.rpg.utils.utils import big_line
+from utils.utils import big_line
 
 def create_enemy(floor):
     base_hp = 40 + floor * 10
