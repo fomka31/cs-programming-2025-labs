@@ -1,6 +1,5 @@
 # game\game_flow.py
 
-from game.dungeon import Dungeon
 from utils.utils import big_line
 from persistence.save_load import save_game
 
@@ -30,7 +29,11 @@ def pause_menu(hero, dungeon, current_slot):
             else:
                 return "continue", current_slot
         elif choice == "3":
-            return "exit", current_slot
+            confirm = input("Вы уверены? Несохранённый прогресс будет потерян! (д/н): ").strip().lower()
+            if confirm in ("д", "y", "yes"):
+                return "exit", current_slot
+            else:
+                continue
         else:
             print("Неверный выбор.")
 
@@ -51,8 +54,9 @@ def play_dungeon(hero, dungeon, current_slot):
 
     while not hero.is_dead:
         big_line()
-        print(f"Этаж: {dungeon.floor} | Комнат пройдено: {dungeon.room_count}/{dungeon.rooms_until_next_floor}")
+        print(f"Этаж: {dungeon.floor} | Пройдено комнат: {dungeon.room_count}/{dungeon.rooms_until_next_floor}")
 
+        # Генерация пары комнат
         left, right = dungeon.generate_room_pair()
         visible = dungeon.is_visible()
 
@@ -63,8 +67,8 @@ def play_dungeon(hero, dungeon, current_slot):
 
         print("\nКоманды:")
         print("  л/п — выбрать путь")
-        print("  и   — открыть инвентарь")
-        print("  м   — меню (сохранить, выйти)")
+        print("  и   — инвентарь")
+        print("  м   — меню")
         choice = input("> ").strip().lower()
 
         if choice in ("и", "инвентарь", "i"):
@@ -73,10 +77,9 @@ def play_dungeon(hero, dungeon, current_slot):
         elif choice in ("м", "menu", "m"):
             action, new_slot = pause_menu(hero, dungeon, current_slot)
             current_slot = new_slot
-            if action == "continue":
-                continue
-            elif action == "exit":
+            if action == "exit":
                 return
+            continue
         elif choice in ("л", "лево", "left", "l"):
             room_type = left
         elif choice in ("п", "право", "прав", "right", "r"):
@@ -85,13 +88,25 @@ def play_dungeon(hero, dungeon, current_slot):
             print("Неверная команда.")
             continue
 
+        # Разрешение выбранной комнаты
         success = dungeon.resolve_room(hero, room_type)
-        if not success:
+        if not success or hero.is_dead:
             break
 
-        dungeon.advance()
-        if hero.is_dead:
-            break
+        # Проверка: завершён ли этаж?
+        if dungeon.advance_room():
+            print(f"\n{'='*50}")
+            print(f"🏆 Вы прошли все комнаты этажа {dungeon.floor}!")
+            print(f"Последний страж — БОСС! Готовьтесь к битве!")
+            print(f"{'='*50}")
+
+            from logic.boss_battle import start_boss_battle
+            if not start_boss_battle(hero, dungeon.floor):
+                break  # Герой погиб
+
+            # Переход на следующий этаж
+            dungeon.finish_floor()
+            print(f"\n🌌 Вы победили босса и спустились на этаж {dungeon.floor}!")
 
     if hero.is_dead:
         big_line()

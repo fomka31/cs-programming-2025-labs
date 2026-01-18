@@ -41,14 +41,15 @@ class Entity:
     @property
     def piercing_dmg(self):
         return self.base_piercing_dmg + getattr(self.weapon, 'piercing_dmg', 0)
+    
     @property
     def magic_dmg(self):
-
         return self.base_magic_dmg + getattr(self.weapon, 'magic_dmg', 0)
+    
     @property
     def is_dead(self):
-
         return self.current_hp <= 0
+    
     def get_dmg(self, dmg):
         self.current_hp = max(0, self.current_hp - dmg)
 
@@ -63,17 +64,19 @@ class Entity:
 
     def physical_attack(self, target):
         if random.random() < target.evade_chance:
-
             print(f"{target.name} уклонился!")
             return 0
+        
         raw_dmg = self.physical_dmg
         defense = target.physical_res
         actual_dmg = max(1, int(raw_dmg - defense))  # Минимум 1 урона
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ УДАР!")
+
         target.get_dmg(actual_dmg)
         return actual_dmg
+    
     def magic_hit(self, target):
         raw_dmg = self.magic_dmg
 
@@ -83,23 +86,26 @@ class Entity:
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ МАГ. УДАР!")
+
         target.get_dmg(actual_dmg)
         return actual_dmg
+    
     def piercing_hit(self, target):
         if random.random() < target.evade_chance:
 
             print(f"{target.name} уклонился!")
             return 0
+        
         actual_dmg = max(1, int(self.piercing_dmg))  # Piercing всегда наносит урон
         if self._roll_crit():
             actual_dmg = int(actual_dmg * self.crit_dmg)
             print("КРИТИЧЕСКИЙ ВЫСТРЕЛ!")
+
         target.get_dmg(actual_dmg)
         return actual_dmg
 
 class Hero(Entity):
     def __init__(self, name):
-
         super().__init__()
         self.name = name.capitalize()
         self.str = random.randint(10, 15)
@@ -110,11 +116,12 @@ class Hero(Entity):
         self.exp = 0
         self.exp_to_lvlup = ((1.15) ** self.lvl) * 100
         self.gold = 0
+
     def plus_exp(self, num):
         self.exp += num
-
         print(f"+{num} опыта")
         self.lvl_up()
+
     def lvl_up(self):
         while self.exp >= self.exp_to_lvlup:
 
@@ -127,6 +134,7 @@ class Hero(Entity):
             self.exp_to_lvlup = ((1.15) ** self.lvl) * 100
             self.show_stats()
             print("="*70)
+
     def apply_stats_grow(self):
         raise NotImplementedError
 
@@ -143,113 +151,81 @@ class Hero(Entity):
         print(f"Оружие: {self.weapon.name if self.weapon else 'Нет'}")
         print(f"Броня: {self.armor.name if self.armor else 'Нет'}")
         print()
-    def cheat(self):
-        self.exp = self.exp_to_lvlup
 
-        self.lvl_up()
     def add_to_inventory(self, item):
         if len(self.inventory) >= self.inventory_size:
-
             print("Инвентарь полон!")
-            self.drop_item()
+            if not self.drop_item():  # ← изменено
+                print("Предмет не добавлен.")
+                return
         self.inventory.append(item)
         if item.item_type == "gold":
             self.gold += item.amount
             print(f"Получено {item.amount} золота! Всего: {self.gold}")
         else:
             print(f'Предмет "{item.name}" добавлен.')
+
     def drop_item(self):
         self.show_inventory()
-
         try:
             idx = int(input("Номер предмета для выбрасывания (0 — отмена): ")) - 1
             if idx == -1:
-                return
+                return False  # ← отмена
             if 0 <= idx < len(self.inventory):
                 dropped = self.inventory.pop(idx)
                 print(f'Выброшен: {dropped.name}')
+                return True
             else:
                 print("Неверный номер.")
+                return False
         except ValueError:
             print("Введите число.")
+            return False
+
     def show_inventory(self):
-        if not self.inventory:
-
-            print("Инвентарь пуст.")
-            return
+        print("\n=== ЭКИПИРОВКА ===")
+        print(f"Оружие: {self.weapon.name if self.weapon else '—'}")
+        print(f"Броня:  {self.armor.name if self.armor else '—'}")
+    
         print("\n=== ИНВЕНТАРЬ ===")
-        for i, item in enumerate(self.inventory, 1):
-            print(f"{i}. {item.name} ({item.item_type})")
-    def open_inventory(self):
-        """Полноценное меню инвентаря с действиями."""
+        if not self.inventory:
+            print("Пусто")
+        else:
+            for i, item in enumerate(self.inventory, 1):
+                print(f"{i}. {item.name} ({item.item_type})")
 
+    def open_inventory(self):
         while True:
             self.show_inventory()
-            if not self.inventory:
-                input("Нажмите Enter, чтобы продолжить...")
-                return
-            print(f"\n{len(self.inventory) + 1}. Назад")
+            print("\nДействия:")
+            print("1. Экипировать предмет из инвентаря")
+            print("2. Снять оружие")
+            print("3. Снять броню")
+            print("4. Использовать зелье")
+            print("5. Выбросить предмет")
+            print("6. Назад")
             big_line()
-
             try:
-                choice = int(input("Выберите предмет: ")) - 1
-                if choice == len(self.inventory):
+                choice = input("Выберите действие: ").strip()
+                if choice == "1":
+                    self._equip_from_inventory()
+                elif choice == "2":
+                    self._unequip_weapon()
+                elif choice == "3":
+                    self._unequip_armor()
+                elif choice == "4":
+                    self._use_potion()
+                elif choice == "5":
+                    self._drop_item()
+                elif choice == "6":
                     return
-                if 0 <= choice < len(self.inventory):
-                    item = self.inventory[choice]
-                    self._item_action_menu(item, choice)
                 else:
-                    print("Неверный номер.")
-            except ValueError:
-                print("Введите число.")
-    def _item_action_menu(self, item, index):
-        """Меню действий для выбранного предмета."""
+                    print("Неверный выбор.")
+            except Exception as e:
+                print(f"Ошибка: {e}")
 
-        actions = []
-        if item.item_type == "potion":
-            actions.append("использовать")
-        elif item.item_type == "weapon":
-            if item.can_equip(self):
-                actions.append("экипировать")
-            actions.append("выбросить")
-        elif item.item_type == "armor":
-            if item.can_equip(self):
-                actions.append("экипировать")
-            actions.append("выбросить")
-        elif item.item_type == "gold":
-            actions.append("выбросить")
-        else:
-            actions.append("выбросить")
-        actions.append("назад")
-
-        print(f'\nПредмет: "{item.name}"')
-        for i, action in enumerate(actions, 1):
-
-            print(f"{i}. {action.capitalize()}")
-        try:
-            act_choice = int(input("Выберите действие: ")) - 1
-
-            if 0 <= act_choice < len(actions):
-                action = actions[act_choice]
-                if action == "использовать":
-                    item.use(self)
-                    self.inventory.pop(index)
-                elif action == "экипировать":
-                    if item.item_type == "weapon":
-                        self.equip_weapon(item)
-                    elif item.item_type == "armor":
-                        self.equip_armor(item)
-                elif action == "выбросить":
-                    self.inventory.pop(index)
-                    print(f'Предмет "{item.name}" выброшен.')
-                # "назад" — ничего не делаем
-            else:
-                print("Неверный выбор.")
-        except ValueError:
-            print("Введите число.")
     def equip_weapon(self, weapon):
         if not weapon.can_equip(self):
-
             print("Вы не можете экипировать это оружие!")
             return
         if self.weapon:
@@ -259,9 +235,9 @@ class Hero(Entity):
         if weapon in self.inventory:
             self.inventory.remove(weapon)
         print(f"Экипировано: {weapon.name}")
+    
     def equip_armor(self, armor):
         if not armor.can_equip(self):
-
             print("Вы не можете экипировать эту броню!")
             return
         if self.armor:
@@ -271,6 +247,95 @@ class Hero(Entity):
         if armor in self.inventory:
             self.inventory.remove(armor)
         print(f"Экипирована: {armor.name}")
+
+    def _equip_from_inventory(self):
+        usable_items = [
+            (i, item) for i, item in enumerate(self.inventory)
+            if item.item_type in ("weapon", "armor") and item.can_equip(self)
+        ]
+        if not usable_items:
+            print("Нет предметов для экипировки.")
+            input("Нажмите Enter...")
+            return
+
+        print("\nДоступные предметы:")
+        for idx, (pos, item) in enumerate(usable_items, 1):
+            print(f"{idx}. {item.name}")
+
+        try:
+            sel = int(input("Номер предмета (0 — отмена): ")) - 1
+            if sel == -1:
+                return
+            if 0 <= sel < len(usable_items):
+                pos, item = usable_items[sel]
+                if item.item_type == "weapon":
+                    self.equip_weapon(item)
+                elif item.item_type == "armor":
+                    self.equip_armor(item)
+                # Удаляем из инвентаря только если успешно экипировали
+                if item not in self.inventory:
+                    pass  # уже убрано в equip_*
+            else:
+                print("Неверный номер.")
+        except ValueError:
+            print("Введите число.")
+
+    def _unequip_weapon(self):
+        if not self.weapon:
+            print("Оружие не экипировано.")
+            return
+        self.inventory.append(self.weapon)
+        print(f"Оружие '{self.weapon.name}' перемещено в инвентарь.")
+        self.weapon = None
+
+    def _unequip_armor(self):
+        if not self.armor:
+            print("Броня не экипирована.")
+            return
+        self.inventory.append(self.armor)
+        print(f"Броня '{self.armor.name}' перемещена в инвентарь.")
+        self.armor = None
+
+    def _use_potion(self):
+        potions = [(i, item) for i, item in enumerate(self.inventory) if item.item_type == "potion"]
+        if not potions:
+            print("Нет зелий в инвентаре.")
+            input("Нажмите Enter...")
+            return
+
+        print("\nВаши зелья:")
+        for idx, (pos, item) in enumerate(potions, 1):
+            print(f"{idx}. {item.name}")
+
+        try:
+            sel = int(input("Номер зелья (0 — отмена): ")) - 1
+            if sel == -1:
+                return
+            if 0 <= sel < len(potions):
+                pos, potion = potions[sel]
+                potion.use(self)
+                self.inventory.pop(pos)
+            else:
+                print("Неверный номер.")
+        except ValueError:
+            print("Введите число.")
+
+    def _drop_item(self):
+        if not self.inventory:
+            print("Инвентарь пуст.")
+            return
+        self.show_inventory()
+        try:
+            idx = int(input(f"Номер предмета для выбрасывания (1-{len(self.inventory)}, 0 — отмена): ")) - 1
+            if idx == -1:
+                return
+            if 0 <= idx < len(self.inventory):
+                dropped = self.inventory.pop(idx)
+                print(f'Выброшен: {dropped.name}')
+            else:
+                print("Неверный номер.")
+        except ValueError:
+            print("Введите число.")
 
 class Melee(Hero):
     def __init__(self, name):
@@ -293,9 +358,9 @@ class Melee(Hero):
         self.block_chance = 0.02 + 0.01 * self.lvl
         self.weapon = starter_sword
         self.armor = starter_armor
+
     def apply_stats_grow(self):
         self.str += 5
-
         self.dex += 2
         self.int += 1
         self.max_hp = 120 + self.str * 3
@@ -308,7 +373,6 @@ class Melee(Hero):
 
 class Ranger(Hero):
     def __init__(self, name):
-
         super().__init__(name)
         self.dex += 5
         self.int += 1
@@ -327,9 +391,9 @@ class Ranger(Hero):
         self.crit_dmg = 1.7
         self.weapon = starter_bow
         self.armor = starter_armor
+
     def apply_stats_grow(self):
         self.str += 1
-
         self.dex += 5
         self.int += 2
         self.max_hp = 90 + self.str * 2
@@ -344,7 +408,6 @@ class Ranger(Hero):
 
 class Mage(Hero):
     def __init__(self, name):
-
         super().__init__(name)
         self.int += 5
         self.dex += 1
@@ -365,15 +428,14 @@ class Mage(Hero):
         self.crit_dmg = 2.2
         self.weapon = starter_staff
         self.armor = starter_armor
+
     def apply_stats_grow(self):
         self.str += 1
-
         self.dex += 2
         self.int += 6
         self.max_hp = 70 + self.str * 2
         self.current_hp = self.max_hp
         self.max_mana = 130 + self.int * 2
         self.current_mana = self.max_mana
-    
         self.base_magic_dmg = 12 + self.int * 1.4
         self.base_magic_res = 4 + self.int * 0.4

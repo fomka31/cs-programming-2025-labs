@@ -6,8 +6,8 @@ from items.item_classes import Gold
 from utils.utils import big_line
 
 def create_enemy(floor):
-    base_hp = 40 + floor * 10
-    base_dmg = 5 + floor * 2
+    base_hp = 30 + floor * 8
+    base_dmg = 8 + floor * 3
     templates = [
         ("Гоблин", 1.0, 0.8),
         ("Орк", 1.3, 1.0),

@@ -1,0 +1,16 @@
+# Байт-код Python
+__pycache__/
+*.pyc
+
+# Сохранения (не нужно коммитить прогресс игроков)
+saves/
+
+# IDE / редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ОС
+.DS_Store
+Thumbs.db

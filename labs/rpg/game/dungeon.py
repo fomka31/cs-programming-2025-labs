@@ -1,7 +1,7 @@
-# game\dungeon.py
+# game/dungeon.py
 
 import random
-from items.item_list import CHEST_LOOT, small_heal, big_heal
+from items.item_list import CHEST_LOOT, small_heal
 
 ROOM_TYPES = ["battle", "rest", "chest"]
 
@@ -9,7 +9,7 @@ class Dungeon:
     def __init__(self):
         self.floor = 1
         self.room_count = 0
-        self.rooms_until_next_floor = 5
+        self.rooms_until_next_floor = 5  # После 5 комнат — босс
 
     def generate_room_pair(self):
         left = random.choice(ROOM_TYPES)
@@ -42,13 +42,20 @@ class Dungeon:
             return True
         elif room_type == "chest":
             print("Вы нашли сундук!")
-            loot = random.choice(CHEST_LOOT)
+            available_loot = [
+                item for item in CHEST_LOOT
+                if getattr(item, 'lvl_required', 0) <= self.floor
+            ]
+            loot = random.choice(available_loot) if available_loot else small_heal
             hero.add_to_inventory(loot)
             return True
 
-    def advance(self):
+    def advance_room(self):
+        """Переход к следующей комнате. Возвращает True, если пора драться с боссом."""
         self.room_count += 1
-        if self.room_count >= self.rooms_until_next_floor:
-            self.floor += 1
-            self.room_count = 0
-            print(f"\n🌌 Вы достигли этажа {self.floor}!")
+        return self.room_count >= self.rooms_until_next_floor
+
+    def finish_floor(self):
+        """Сброс счётчика комнат и переход на новый этаж."""
+        self.room_count = 0
+        self.floor += 1

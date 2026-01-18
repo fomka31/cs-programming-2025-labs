@@ -3,7 +3,6 @@
 import json
 import os
 from characters.char_classes import Melee, Ranger, Mage
-from game.dungeon import Dungeon
 from items.item_list import (
     starter_sword, starter_bow, starter_staff, starter_armor,
     iron_sword, hunting_bow, mage_staff, leather_armor, chain_mail,
